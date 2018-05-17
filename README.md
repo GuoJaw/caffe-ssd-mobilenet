@@ -6,6 +6,8 @@
 
 	和编译Caffe一样
 	
+	caffe.proto 生成caffe.pb.cc： caffe.pb.cc / caffe.pb.h，拷贝到相应位置（百度下即可）
+	
 ## 测试环境是否成功搭建：python2 demo.py
 
 	cd caffe-ssd-mobile
