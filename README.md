@@ -1,18 +1,20 @@
 ## 相关代码
-	#coding=utf-8    ## 中文注释
+		#coding=utf-8    ## 中文注释
 
-	import numpy as np
-	import sys,os
-	import cv2
-	import caffe  
-	import time
+		import numpy as np
+		import sys,os
+		import cv2
+		import caffe  
+		import time
 
-	##设置caffe_root，开启gpu模式
-	caffe_root = '/home/gjw/caffe-ssd-mobile/'
-	sys.path.insert(0, caffe_root + 'python')  
-	caffe.set_mode_gpu()   ### 设置GPU模式
+		##设置caffe_root，开启gpu模式
+		caffe_root = '/home/gjw/caffe-ssd-mobile/'
+		sys.path.insert(0, caffe_root + 'python')  
+		caffe.set_mode_gpu()   ### 设置GPU模式
 
-
+	if __name__ == "__main__":  
+	    detect()
+    
 ## Intro
 	包含Caffe-SSD-Mobilenet 和 Caffe-SSD 和 Classification
 
