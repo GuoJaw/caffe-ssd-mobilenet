@@ -14,7 +14,6 @@ caffe.set_mode_gpu()   ### 设置GPU模式
 
 net_file= 'MobileNetSSD_deploy.prototxt'  
 caffe_model='MobileNetSSD_deploy.caffemodel'  
-test_dir = "/home/gjw/data/KITTIdevkit/KITTI/JPEGImages"
 
 if not os.path.exists(caffe_model):
     print("MobileNetSSD_deploy.caffemodel does not exist,")
@@ -87,5 +86,5 @@ def detect():
         if(cv2.waitKey(1) & 0xff == 27):
                 break
 
-for f in os.listdir(test_dir):
+if __name__ == '__main__':
     detect()
