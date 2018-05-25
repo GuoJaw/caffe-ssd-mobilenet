@@ -4,7 +4,7 @@
 import numpy as np
 import sys,os
 import cv2
-caffe_root = '/home/gjw/caffe-ssd-mobile/'
+caffe_root = '/home/p/caffe-ssd-mobile/'
 sys.path.insert(0, caffe_root + 'python')  
 import caffe  
 import time
@@ -14,6 +14,7 @@ caffe.set_mode_gpu()   ### 设置GPU模式
 
 net_file= 'MobileNetSSD_deploy.prototxt'  
 caffe_model='MobileNetSSD_deploy.caffemodel'  
+
 
 if not os.path.exists(caffe_model):
     print("MobileNetSSD_deploy.caffemodel does not exist,")
@@ -44,19 +45,20 @@ def postprocess(img, out):
     conf = out['detection_out'][0,0,:,2]
     return (box.astype(np.int32), conf, cls)
 
-def detect():
 
-    #cap = cv2.VideoCapture(0)
-    cap = cv2.VideoCapture('/home/gjw/ssd_sort-master/MOT06.mp4')  # 读取视频
+colours = np.random.rand(32,3)*255
+
+def detect():
+    cap = cv2.VideoCapture("/home/p/caffe-ssd-mobile/kitti2.avi")  # 读取视频
 
     while (1) :
         ret, origimg = cap.read()
         if ret is False:
+            print("Load video error")
             break
 
         start = time.time()  # fps开始时间
 
-        #origimg = cv2.imread(imgfile)
         img = preprocess(origimg)
 
         img = img.astype(np.float32)
@@ -77,10 +79,10 @@ def detect():
         for i in range(len(box)):
            p1 = (box[i][0], box[i][1])
            p2 = (box[i][2], box[i][3])
-           cv2.rectangle(origimg, p1, p2, (0,255,0))
-           p3 = (max(p1[0], 15), max(p1[1], 15))
-           title = "%s:%.2f" % (CLASSES[int(cls[i])], conf[i])
-           cv2.putText(origimg, title, p3, cv2.FONT_ITALIC, 0.6, (0, 255, 0), 1)
+
+           cv2.rectangle(origimg, p1, p2, (
+                    int(colours[int(cls[i]) % 20, 0]), int(colours[int(cls[i]) % 20, 1]), int(colours[int(cls[i]) % 20, 2])), 2)
+
         cv2.imshow("SSD", origimg)
 
         if(cv2.waitKey(1) & 0xff == 27):
@@ -88,3 +90,7 @@ def detect():
 
 if __name__ == '__main__':
     detect()
+
+
+
+
