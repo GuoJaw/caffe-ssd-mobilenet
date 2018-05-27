@@ -20,13 +20,34 @@
 
 ## 环境搭建：
 
-	和编译Caffe一样
-	
-	caffe.proto 生成caffe.pb.cc： caffe.pb.cc / caffe.pb.h，拷贝到相应位置（百度下即可）
-			protoc src/caffe/proto/caffe.proto --cpp_out=.
-			mkdir include/caffe/proto
-			mv src/caffe/proto/caffe.pb.h include/caffe/proto
-	
+	（1）和编译Caffe一样
+		caffe.proto 生成caffe.pb.cc： caffe.pb.cc / caffe.pb.h，拷贝到相应位置（百度下即可）
+				protoc src/caffe/proto/caffe.proto --cpp_out=.
+				mkdir include/caffe/proto
+				mv src/caffe/proto/caffe.pb.h include/caffe/proto
+	（2）和编译Caffe一样			
+		1.应用 cudnn
+			将
+			#USE_CUDNN := 1
+			修改成： 
+			USE_CUDNN := 1
+		2.应用 opencv 版本
+			将
+			#OPENCV_VERSION := 3 
+			修改为： 
+			OPENCV_VERSION := 3
+		3.使用 python 接口
+			将
+			#WITH_PYTHON_LAYER := 1 
+			修改为 
+			WITH_PYTHON_LAYER := 1
+		4.修改 python 路径
+			INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include
+			LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib 
+			修改为： 
+			INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include /usr/include/hdf5/serial
+			LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/hdf5/serial       
+
 ## 测试环境是否成功搭建：python2 demo.py
 
 	cd caffe-ssd-mobile
