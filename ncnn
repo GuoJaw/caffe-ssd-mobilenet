@@ -4,7 +4,6 @@
 
 	~/caffe-ssd-mobile/build/tools/upgrade_net_proto_binary KITTIModel-src/old/MobileNetSSD_deploy.caffemodel KITTIModel-src/new/new_MobileNetSSD_deploy.caffemodel
 
-
 (2)新版caffe模型转ncnn模型
 	~/ncnn/build/tools/caffe/caffe2ncnn ~/caffe-ssd-mobile/KITTIModel-src/new/new_MobileNetSSD_deploy.prototxt ~/caffe-ssd-mobile/KITTIModel-src/new/new_MobileNetSSD_deploy.caffemodel ~/caffe-ssd-mobile/KITTIModel-src/new/mobilenet.param ~/caffe-ssd-mobile/KITTIModel-src/new/mobilenet.bin
 
@@ -23,3 +22,6 @@
 	ncnn::Net net;
 	net.load_param_bin("mobilenet.param.bin");
 	net.load_model("mobilenet.bin");
+	
+	
+	
