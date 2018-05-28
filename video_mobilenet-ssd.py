@@ -4,7 +4,7 @@
 import numpy as np
 import sys,os
 import cv2
-caffe_root = '/home/p/caffe-ssd-mobile/'
+caffe_root = '/home/gjw/caffe-ssd-mobile/'
 sys.path.insert(0, caffe_root + 'python')  
 import caffe  
 import time
@@ -12,8 +12,8 @@ import time
 caffe.set_mode_gpu()   ### 设置GPU模式
 
 
-net_file= 'MobileNetSSD_deploy.prototxt'  
-caffe_model='MobileNetSSD_deploy.caffemodel'  
+net_file= 'model/MobileNetSSD_deploy.prototxt'  
+caffe_model='model/MobileNetSSD_final.caffemodel'  
 
 
 if not os.path.exists(caffe_model):
@@ -23,11 +23,7 @@ if not os.path.exists(caffe_model):
 net = caffe.Net(net_file,caffe_model,caffe.TEST)  
 
 CLASSES = ('background',
-           'aeroplane', 'bicycle', 'bird', 'boat',
-           'bottle', 'bus', 'car', 'cat', 'chair',
-           'cow', 'diningtable', 'dog', 'horse',
-           'motorbike', 'person', 'pottedplant',
-           'sheep', 'sofa', 'train', 'tvmonitor')
+           'car', 'cyclist', 'pedestrain')
 
 
 def preprocess(src):
@@ -49,7 +45,7 @@ def postprocess(img, out):
 colours = np.random.rand(32,3)*255
 
 def detect():
-    cap = cv2.VideoCapture("/home/p/caffe-ssd-mobile/kitti2.avi")  # 读取视频
+    cap = cv2.VideoCapture("/home/gjw/caffe-ssd-mobile/kitti2.avi")  # 读取视频
 
     while (1) :
         ret, origimg = cap.read()
@@ -65,8 +61,6 @@ def detect():
         img = img.transpose((2, 0, 1))
 
         net.blobs['data'].data[...] = img
-
-        start=time.time() # 开始时间
 
         out = net.forward()  #前向传播
 
@@ -90,7 +84,6 @@ def detect():
 
 if __name__ == '__main__':
     detect()
-
 
 
 
