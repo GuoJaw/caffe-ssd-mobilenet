@@ -1,31 +1,12 @@
-## 相关代码
-	#coding=utf-8    ## 中文注释
 
-	import numpy as np
-	import sys,os
-	import cv2
-	import caffe  
-	import time
+caffe-mobilenet-ssd
 
-	##设置caffe_root，开启gpu模式
-	caffe_root = '/home/gjw/caffe-ssd-mobile/'
-	sys.path.insert(0, caffe_root + 'python')  
-	caffe.set_mode_gpu()   ### 设置GPU模式
-
-	if __name__ == "__main__":   ## python主函数
-	    detect()
     
 ## Intro
-	包含Caffe-SSD-Mobilenet 和 Caffe-SSD 和 Classification
+	包含Caffe-SSD-Mobilenet  
 
 ## 环境搭建：
-
-	（1）和编译Caffe一样
-		caffe.proto 生成caffe.pb.cc： caffe.pb.cc / caffe.pb.h，拷贝到相应位置（百度下即可）
-				protoc src/caffe/proto/caffe.proto --cpp_out=.
-				mkdir include/caffe/proto
-				mv src/caffe/proto/caffe.pb.h include/caffe/proto
-	（2）和编译Caffe一样			
+	（1）和编译Caffe一样			
 		1.应用 cudnn
 			将
 			#USE_CUDNN := 1
@@ -47,6 +28,11 @@
 			修改为： 
 			INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include /usr/include/hdf5/serial
 			LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu /usr/lib/x86_64-linux-gnu/hdf5/serial       
+	（2）编译好caffe之后，运行报错caffe.proto找不到：
+		caffe.proto 生成caffe.pb.cc： caffe.pb.cc / caffe.pb.h，拷贝到相应位置（百度下即可）
+				protoc src/caffe/proto/caffe.proto --cpp_out=.
+				mkdir include/caffe/proto
+				mv src/caffe/proto/caffe.pb.h include/caffe/proto
 
 ## 测试环境是否成功搭建：python2 demo.py
 
@@ -56,9 +42,11 @@
 	
 ## Caffe-SSD-Mobilenet 模型训练：
 
+## 0.制作kitti数据集（voc格式）：
+	用caffe-SSD生成的LMDB文件
+
 ## 1.建立数据集软连接
 
-	用SSD创建生成的LMDB文件，然后建立软连接
 		$ cd ~/MobileNet-SSD
 		$ ln ‐s /home/gjw/data/KITTIdevkit/KITTI/lmdb/KITTI_trainval_lmdb trainval_lmdb
 		$ ln ‐s /home/gjw/data/KITTIdevkit/KITTI/lmdb/KITTI_test_lmdb test_lmdb
@@ -71,19 +59,19 @@
 	  display_name: "background"
 	  }
 	  item {
-	  name: "Car"
+	  name: "car"
 	  label: 1
-	  display_name: "Car"
+	  display_name: "car"
 	  }
 	  item {
-	  name: "Pedestrian"
+	  name: "pedestrian"
 	  label: 2
-	  display_name: "Pedestrian"
+	  display_name: "pedestrian"
 	  }
 	  item {
-	  name: "Cyclist"
+	  name: "cyclist"
 	  label: 3
-	  display_name: "Cyclist"
+	  display_name: "cyclist"
 	  }
 
 
@@ -101,35 +89,42 @@
 
 ## 5.预训练模型（代码中已经存在）：MobileNet_Pre_Train.caffemodel
 
-## 6.开始训练,测试网络精度
+## 6.开始训练,测试网络精度:sh train.sh
 
 	修改并运行train.sh脚本，中途可以不断调节参数。
 	训练结束后，运行test.sh脚本，测试网络的精度值。
 
 ## ============================================
 
-## 7.合并bn层,生成检测模型
+训练完成之后，需要修改网络模型.prototxt：
+## 7.修改merge_bn.py代码，合并bn层：
+	
+	注解：snapshot/mobilenet_12000.caffemodel ---> snapshot/MobileNetSSD_deploy.caffemodel
 
-	为了提高模型运行速度，作者在这里将bn层合并到了卷积层中，相当于bn的计算时间就被节省了，对检测速度可能有小幅度的帮助，打开merge_bn.py文件，然后注意修改其中的文件路径：
+	打开merge_bn.py文件，然后注意修改其中的文件路径：
 
 	caffe_root = '/home/gjw/caffe-ssd-mobile/'
-	train_proto = 'example/MobileNetSSD_train.prototxt'   #训练使用的example/MobileNetSSD_train.prototxt
-	train_model = 'MobileNetSSD_train.caffemodel'  # 训练生成的caffemodel路径
-	deploy_proto = 'example/MobileNetSSD_deploy.prototxt'  #训练使用的example/MobileNetSSD_deploy.prototxt
-	save_model = 'MobileNetSSD_deploy.caffemodel'  #合并后，caffemodel的保存路径
+	train_proto = 'example/MobileNetSSD_train.prototxt'   #训练使用的example/MobileNetSSD_train.prototxt(不用修改)
+	train_model = 'snapshot/mobilenet_12000.caffemodel'  # 训练生成的caffemodel路径(需要修改)
+	deploy_proto = 'example/MobileNetSSD_deploy.prototxt'  #训练使用的example/MobileNetSSD_deploy.prototxt(不用修改)
+	save_model = 'snapshot/MobileNetSSD_final.caffemodel'  #合并后，caffemodel的保存路径
 
-		 然后运行该脚本，就可以得到最终的检测模型，那这个模型由于合并了bn层，参数格式已经变化，就不能再用于训练了。
+	注解1：为了提高模型运行速度，作者在这里将bn层合并到了卷积层中，相当于bn的计算时间就被节省了，对检测速度可能有小幅度的帮助
+	注解2：运行merge_bn.py脚本后，就可以得到最终的检测模型，那这个模型由于合并了bn层，参数格式已经变化，就不能再用于训练了。
 	如果想继续训练，应该用合并前的。
 
-## 8.depthwise convolution layer加速
+## 8.depthwise convolution layer加速，修改example/MobileNetSSD_deploy.prototxt
 
-	epthwise_conv_layer.hpp
-	depthwise_conv_layer.cpp
-	depthwise_conv_layer.cu
+	(1)将其中所有名为convXX/dw（XX代指数字）的type从”Convolution”替换成”DepthwiseConvolution”，总共需要替换13处，从conv1/dw到conv13/dw
+	(2)把“engine: CAFFE”都注释掉
+	注释1：caffemodel模型不用动,只修改example/MobileNetSSD_deploy.prototxt即可
+	注解2：下面三个是加入的注册DepthwiseConvolution层的代码
+		epthwise_conv_layer.hpp
+		depthwise_conv_layer.cpp
+		depthwise_conv_layer.cu
 
-	(1)修改MobileNetSSD_deploy.prototxt，将其中所有名为convXX/dw（XX代指数字）的type从”Convolution”替换成”DepthwiseConvolution”，总共需要替换13处，从conv1/dw到conv13/dw
-	(2)把“engine: CAFFE”都注释掉，这个新的网络文件可以另存为MobileNetSSD_deploy_depth.prototxt
-	注释：caffemodel模型不用动，只需要指定新的prototxt文件和含有depthwise convolution layer的Caffe即可。
+## 9.合并完成之后，用python2 demo.py代码进行测试：
+	调用example/MobileNetSSD_deploy.prototxt和'snapshot/MobileNetSSD_final.caffemodel'，就可以进行检测
 
 
 ## Classification  二分类（Caffe+Alexnet）
