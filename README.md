@@ -5,7 +5,7 @@ caffe-mobilenet-ssd
 ## Intro
 	包含Caffe-SSD-Mobilenet  
 
-## 环境搭建：
+## 一、环境搭建：
 	（1）和编译Caffe一样			
 		1.应用 cudnn
 			将
@@ -40,7 +40,7 @@ caffe-mobilenet-ssd
 	python2 demo.py
 
 	
-## Caffe-SSD-Mobilenet 模型训练：
+## 二、Caffe-SSD-Mobilenet 模型训练：
 
 ## 0.制作kitti数据集（voc格式）：
 	用caffe-SSD生成的LMDB文件
@@ -94,10 +94,9 @@ caffe-mobilenet-ssd
 	修改并运行train.sh脚本，中途可以不断调节参数。
 	训练结束后，运行test.sh脚本，测试网络的精度值。
 
-## ============================================
 
-训练完成之后，需要修改网络模型.prototxt：
-## 7.修改merge_bn.py代码，合并bn层：
+## 三、(网络加速)训练完成之后，需要修改网络模型.prototxt：
+## 1.修改merge_bn.py代码，合并bn层：
 	
 	注解：snapshot/mobilenet_12000.caffemodel ---> snapshot/MobileNetSSD_deploy.caffemodel
 
@@ -113,7 +112,7 @@ caffe-mobilenet-ssd
 	注解2：运行merge_bn.py脚本后，就可以得到最终的检测模型，那这个模型由于合并了bn层，参数格式已经变化，就不能再用于训练了。
 	如果想继续训练，应该用合并前的。
 
-## 8.depthwise convolution layer加速，修改example/MobileNetSSD_deploy.prototxt
+## 2.depthwise convolution layer加速，修改example/MobileNetSSD_deploy.prototxt
 
 	(1)将其中所有名为convXX/dw（XX代指数字）的type从”Convolution”替换成”DepthwiseConvolution”，总共需要替换13处，从conv1/dw到conv13/dw
 	(2)把“engine: CAFFE”都注释掉
@@ -123,9 +122,13 @@ caffe-mobilenet-ssd
 		depthwise_conv_layer.cpp
 		depthwise_conv_layer.cu
 
-## 9.合并完成之后，用python2 demo.py代码进行测试：
-	调用example/MobileNetSSD_deploy.prototxt和'snapshot/MobileNetSSD_final.caffemodel'，就可以进行检测
 
+
+## 四、（测试模型）：
+	合并完成之后，用python2 demo.py代码进行测试：
+		调用example/MobileNetSSD_deploy.prototxt和'snapshot/MobileNetSSD_final.caffemodel'，就可以进行检测
+
+## ============================================
 
 ## Classification  二分类（Caffe+Alexnet）
 
