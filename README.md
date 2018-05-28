@@ -130,6 +130,33 @@ caffe-mobilenet-ssd
 
 ## ============================================
 
+## ncnn
+	(1)旧版caffe模型转新版caffe模型
+		~/caffe-ssd-mobile/build/tools/upgrade_net_proto_text KITTIModel-src/old/MobileNetSSD_deploy.prototxt KITTIModel-src/new/new_MobileNetSSD_deploy.prototxt
+
+		~/caffe-ssd-mobile/build/tools/upgrade_net_proto_binary KITTIModel-src/old/MobileNetSSD_deploy.caffemodel KITTIModel-src/new/new_MobileNetSSD_deploy.caffemodel
+
+	(2)新版caffe模型转ncnn模型
+		~/ncnn/build/tools/caffe/caffe2ncnn ~/caffe-ssd-mobile/KITTIModel-src/new/new_MobileNetSSD_deploy.prototxt ~/caffe-ssd-mobile/KITTIModel-src/new/new_MobileNetSSD_deploy.caffemodel ~/caffe-ssd-mobile/KITTIModel-src/new/mobilenet.param ~/caffe-ssd-mobile/KITTIModel-src/new/mobilenet.bin
+
+		注意:生成的ncnn格式的模型中，.param可以理解为网络的配置文件，.bin可以理解为网络的参数（各种权重）文件。 
+
+		注解：若需要对模型进行加密，可用如下命令
+		 $./ncnn2mem mobilenet.param mobilenet.bin mobilenet.id.h mobilenet.mem.h
+
+	(3)最后可生成 mobilenet.param.bin 这样的二进制加密文件。ncnn对加密和非加密两种文件的读取方式不一样。
+
+		//load非加密的ncnn模型
+		ncnn::Net net;
+		net.load_param("mobilenet.param");
+		net.load_model("mobilenet.bin");
+		//load加密的ncnn模型
+		ncnn::Net net;
+		net.load_param_bin("mobilenet.param.bin");
+		net.load_model("mobilenet.bin");
+
+## ============================================
+
 ## Classification  二分类（Caffe+Alexnet）
 
 ## 一、训练数据集的准备
@@ -178,8 +205,6 @@ caffe-mobilenet-ssd
 	执行 python2 train_txt.py，生成train.txt
 	执行 python2 val_txt.py，生成val.txt
 
-## +++++++++++++++++++++++++++++++++++++++++++++++++
-
 ## 二、生成leveldb数据集、均值文件
 
 	【1】生成leveldb格式的数据集
@@ -189,8 +214,6 @@ caffe-mobilenet-ssd
 
 	【2】生成均值文件
 	./build/tools/compute_image_mean  ./data/EyeData/eye_train_leveldb  ./data/EyeData/mean.binaryproto --backend=leveldb
-
-## +++++++++++++++++++++++++++++++++++++++++++++++++
 
 ## 三、网络配置文件（将bvlc_alexnet文件拷贝到caffe-ssd/data/EyeData目录下），修改网络配置文件
 
@@ -288,14 +311,10 @@ caffe-mobilenet-ssd
 	snapshot_prefix: "data/EyeData/bvlc_alexnet/model/alexnet"  ## 模型保存路径model；模型名字alexnet_iter_1500.caffemodel
 	solver_mode: GPU
 
-## +++++++++++++++++++++++++++++++++++++++++++++++++   
-
-## （四）训练
+## 四、训练
 	./build/tools/caffe train --solver=data/EyeData/bvlc_alexnet/solver.prototxt -gpu 0
 
-## +++++++++++++++++++++++++++++++++++++++++++++++++
-
-## （五）进行测试单张图像类别预测
+## 五、进行测试单张图像类别预测
 	【1】deploy.prototxt修改（用于：预测图片class）：只修改fc8层，修改与train_val.prototxt的fc8层必须一致
 	layer {
 	  name: "fc8eye"
