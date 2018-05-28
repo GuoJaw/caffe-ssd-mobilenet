@@ -132,12 +132,13 @@ caffe-mobilenet-ssd
 
 ## ncnn
 	(1)旧版caffe模型转新版caffe模型
-		~/caffe-ssd-mobile/build/tools/upgrade_net_proto_text KITTIModel-src/old/MobileNetSSD_deploy.prototxt KITTIModel-src/new/new_MobileNetSSD_deploy.prototxt
+		~/caffe-ssd-mobile/build/tools/upgrade_net_proto_text model_kitti/old/MobileNetSSD_deploy.prototxt model_kitti/new/new_MobileNetSSD_deploy.prototxt
 
-		~/caffe-ssd-mobile/build/tools/upgrade_net_proto_binary KITTIModel-src/old/MobileNetSSD_deploy.caffemodel KITTIModel-src/new/new_MobileNetSSD_deploy.caffemodel
+		~/caffe-ssd-mobile/build/tools/upgrade_net_proto_binary model_kitti/old/MobileNetSSD_final.caffemodel model_kitti/new/new_MobileNetSSD_final.caffemodel
+
 
 	(2)新版caffe模型转ncnn模型
-		~/ncnn/build/tools/caffe/caffe2ncnn ~/caffe-ssd-mobile/KITTIModel-src/new/new_MobileNetSSD_deploy.prototxt ~/caffe-ssd-mobile/KITTIModel-src/new/new_MobileNetSSD_deploy.caffemodel ~/caffe-ssd-mobile/KITTIModel-src/new/mobilenet.param ~/caffe-ssd-mobile/KITTIModel-src/new/mobilenet.bin
+		~/ncnn/build/tools/caffe/caffe2ncnn ~/caffe-ssd-mobile/model_kitti/new/new_MobileNetSSD_deploy.prototxt ~/caffe-ssd-mobile/model_kitti/new/new_MobileNetSSD_final.caffemodel ~/caffe-ssd-mobile/model_kitti/new/mobilenet.param ~/caffe-ssd-mobile/model_kitti/new/mobilenet.bin
 
 		注意:生成的ncnn格式的模型中，.param可以理解为网络的配置文件，.bin可以理解为网络的参数（各种权重）文件。 
 
