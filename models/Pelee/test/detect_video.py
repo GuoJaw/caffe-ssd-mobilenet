@@ -16,7 +16,6 @@ caffe.set_mode_gpu()
 
 net_file= 'deploy.prototxt'  
 caffe_model='snapshot/_iter_10000.caffemodel' 
-test_dir = "JPEGImages"
 
 if not os.path.exists(caffe_model):
     print("caffemodel does not exist")
