@@ -1,4 +1,4 @@
-name: "pelee_voc_304x304_deploy"
+name: "pelee_kitti_304x304_deploy"
 input: "data"
 input_shape {
   dim: 1
@@ -9022,7 +9022,7 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 126
+    num_output: 24
     pad: 0
     kernel_size: 1
     stride: 1
@@ -9138,7 +9138,7 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 126
+    num_output: 24
     pad: 0
     kernel_size: 1
     stride: 1
@@ -9254,7 +9254,7 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 126
+    num_output: 24
     pad: 0
     kernel_size: 1
     stride: 1
@@ -9370,7 +9370,7 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 126
+    num_output: 24
     pad: 0
     kernel_size: 1
     stride: 1
@@ -9486,7 +9486,7 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 126
+    num_output: 24
     pad: 0
     kernel_size: 1
     stride: 1
@@ -9602,7 +9602,7 @@ layer {
     decay_mult: 0
   }
   convolution_param {
-    num_output: 126
+    num_output: 24
     pad: 0
     kernel_size: 1
     stride: 1
@@ -9707,7 +9707,7 @@ layer {
     shape {
       dim: 0
       dim: -1
-      dim: 21
+      dim: 4   # 21
     }
   }
 }
@@ -9740,7 +9740,7 @@ layer {
     phase: TEST
   }
   detection_output_param {
-    num_classes: 21
+    num_classes: 4   # 21
     share_location: true
     background_label_id: 0
     nms_param {
@@ -9760,4 +9760,3 @@ layer {
     confidence_threshold: 0.01
   }
 }
-
