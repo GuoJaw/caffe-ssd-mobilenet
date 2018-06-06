@@ -1,2 +1,2 @@
 cd $caffeSSD
-./build/tools/caffe train -solver=models/pelee_voc/solver.prototxt
+./build/tools/caffe train -solver=models/Pelee/solver.prototxt
