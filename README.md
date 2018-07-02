@@ -1,6 +1,9 @@
 
 caffe-mobilenet-ssd
 
+$ cd ~/caffe
+$ ./build/tools/caffe time -gpu 0 -model examples/mobilenet/XXXX.prototxt 
+
     
 ## Intro
 	包含Caffe-SSD-Mobilenet  
