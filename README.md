@@ -1,7 +1,10 @@
 
 caffe-mobilenet-ssd
 
+## 测试前向网络速度
+
 $ cd ~/caffe
+
 $ ./build/tools/caffe time -gpu 0 -model examples/mobilenet/XXXX.prototxt 
 
     
